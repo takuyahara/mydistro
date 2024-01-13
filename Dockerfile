@@ -19,6 +19,7 @@ RUN ln -s /bun/ws8q22wm8qm41n7fff0xrkzwbjy9l330-bun-0.6.2/bin/bun /usr/bin/bun
 
 # FROM debian
 FROM gcr.io/distroless/base-debian12:debug
+LABEL org.opencontainers.image.source https://github.com/takuyahara/mydistro
 COPY --from=build /output/bun /bun
 COPY --from=build /output/store /nix/store
 COPY --from=build /output/fonts /fonts
