@@ -1,0 +1,40 @@
+name: Docker Build
+
+on:
+  push:
+    tags:
+      - "*.*.*"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      REGISTRY: ghcr.io
+      RELEASE_OWNER: ${{ github.repository_owner }}
+      DESCRIPTION: "kintone 上に登録された PDF 形式の登記簿の内容を文字列として格納するアプリの実行環境です。"
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set env
+        run: |
+          VERSION=$(echo ${{ github.ref }} | sed -e "s/refs\/tags\///g")
+          echo "RELEASE_VERSION=$VERSION" >> $GITHUB_ENV
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v2
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GH_ACCESS_TOKEN }}
+      - name: Build docker image and push to GitHub Container Registry
+        run: |
+          docker buildx create --use
+          docker buildx build \
+            --platform linux/amd64,linux/arm64/v8 \
+            --provenance false \
+            --build-arg GITHUB_TOKEN="${{ secrets.GH_ACCESS_TOKEN }}" \
+            --output "type=image,name=target,annotation-index.org.opencontainers.image.description=${{ env.DESCRIPTION }}" \
+            --tag ${{ env.REGISTRY }}/${{ github.repository }}:${{ env.RELEASE_VERSION }} \
+            --tag ${{ env.REGISTRY }}/${{ github.repository }}:latest \
+            --push \
+            .
+          docker buildx rm
