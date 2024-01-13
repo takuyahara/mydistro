@@ -10,7 +10,8 @@ import puppeteer from 'puppeteer';
 
 (async () => {
   const browser = await puppeteer.launch({
-    executablePath: "/usr/bin/chromium"
+    executablePath: "/usr/bin/chromium",
+    args: ['--no-sandbox']
   });
   const page = await browser.newPage();
   await page.goto('http://example.com');
