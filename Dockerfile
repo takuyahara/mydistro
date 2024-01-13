@@ -20,7 +20,7 @@ FROM gcr.io/distroless/base-debian12:debug
 COPY --from=build /output/bun /bun
 COPY --from=build /output/store /nix/store
 COPY --from=build /output/fonts /fonts
-COPY --from=build /usr/bin/chromium /usr/bin/chromium
+# COPY --from=build /usr/bin/chromium /usr/bin/chromium
 # COPY --from=build /usr/bin/bun /usr/bin/bun
 # COPY main /app/main
 COPY package.json /app/package.json
