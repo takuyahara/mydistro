@@ -3,7 +3,7 @@ FROM nixos/nix AS build
 RUN echo 'filter-syscalls = false' >> /etc/nix/nix.conf
 
 RUN mkdir -p /output/bun
-RUN nix-env --profile /output/profile0 -i bun --filter-syscalls=false
+RUN nix-env --profile /output/profile0 -i bun
 RUN cp -va $(nix-store -qR /output/profile0) /output/bun
 
 RUN mkdir -p /output/store
